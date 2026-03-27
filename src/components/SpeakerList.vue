@@ -123,7 +123,7 @@
 
       const hashId = window.location.hash.replace('#', '');
       if (hashId) {
-        history.pushState(null, null, '#');
+        window.history.pushState(null, null, '#');
 
         const conn = peer.value.connect(hashId);
         setupConnection(conn);
