@@ -241,10 +241,10 @@ function isPriority(index) {
 
 function rowLabel(index) {
   if (isMeta(index)) {
-    return 'Meta';
+    return '‼️ Meta';
   }
   if (isPriority(index)) {
-    return 'Priority';
+    return '❗ Priority';
   }
   return undefined;
 }
