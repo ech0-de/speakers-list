@@ -10,7 +10,24 @@ import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 // Utilities
 import { defineConfig } from 'vite'
+import { copyFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
+
+// GitHub Pages has no SPA fallback, so serve the app as 404.html for routes like /preview
+function spaFallback () {
+  let outDir
+  return {
+    name: 'spa-fallback',
+    apply: 'build',
+    configResolved (config) {
+      outDir = resolve(config.root, config.build.outDir)
+    },
+    closeBundle () {
+      copyFileSync(resolve(outDir, 'index.html'), resolve(outDir, '404.html'))
+    },
+  }
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -49,6 +66,7 @@ export default defineConfig({
       },
       vueTemplate: true,
     }),
+    spaFallback(),
   ],
   optimizeDeps: {
     exclude: [
