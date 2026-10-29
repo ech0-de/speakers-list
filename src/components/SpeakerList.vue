@@ -9,7 +9,7 @@
   >
     <v-card variant="flat">
       <div>
-        <div class="d-flex align-center justify-space-between">
+        <div class="header d-flex align-center justify-space-between">
           <div class="mx-4 mt-2">
             <v-alert
                 class="text-caption"
@@ -22,8 +22,8 @@
             </v-alert>
           </div>
 
-          <v-card-title class="text-h4 text-center flex-grow-1">
-            🎤 Speaker's List &nbsp;📝<span v-if="closed" title="Speaker's list is closed">&nbsp;🔒</span>
+          <v-card-title class="header-title text-h4 text-center flex-grow-1">
+            🎤 Speaker's List &nbsp;<span class="position-relative">📝<span v-if="closed" class="closed-badge" title="Speaker's list is closed">🔒</span></span>
           </v-card-title>
 
           <div class="d-flex flex-column align-start mr-4">
@@ -169,6 +169,36 @@
 </script>
 
 <style scoped>
+  /* Positioned on top of the 📝 so that showing it never changes the header layout. */
+  .closed-badge {
+    bottom: -0.25em;
+    font-size: 0.6em;
+    position: absolute;
+    right: -0.45em;
+  }
+
+  .header-title {
+    overflow: visible;
+  }
+
+  /* Too narrow for status, title and buttons in one row: put the title on its own row. */
+  @media (max-width: 699px) {
+    .header {
+      flex-wrap: wrap;
+    }
+
+    .header-title {
+      flex-basis: 100%;
+      order: -1;
+    }
+  }
+
+  @media (max-width: 399px) {
+    .header-title {
+      font-size: 1.6rem !important;
+    }
+  }
+
   /* Touch devices have no hover, so the button stays visible there. */
   @media (hover: hover) {
     .speaker-row .remove-btn {
