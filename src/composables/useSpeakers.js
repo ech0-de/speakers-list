@@ -14,6 +14,8 @@ const list = ref([]);
 // priority entries, then the normal queue.
 const metaCount = ref(0);
 const priorityCount = ref(0);
+// A closed list is only marked as such; entries can still be added.
+const closed = ref(false);
 
 const peer = ref(null);
 const peerId = ref(null);
@@ -35,6 +37,7 @@ function init() {
     history.value = JSON.parse(localStorage.getItem('history')) || [];
     metaCount.value = Number(localStorage.getItem('metaCount')) || 0;
     priorityCount.value = Number(localStorage.getItem('priorityCount')) || 0;
+    closed.value = localStorage.getItem('closed') === 'true';
   } catch (e) {
     console.error('Restore failed', e);
   }
@@ -145,7 +148,8 @@ function setupConnection(conn, sendStateOnOpen) {
     if (JSON.stringify(data.list) === JSON.stringify(list.value)
       && JSON.stringify(data.history) === JSON.stringify(history.value)
       && (data.metaCount ?? 0) === metaCount.value
-      && (data.priorityCount ?? 0) === priorityCount.value) {
+      && (data.priorityCount ?? 0) === priorityCount.value
+      && (data.closed ?? false) === closed.value) {
       return;
     }
 
@@ -153,6 +157,7 @@ function setupConnection(conn, sendStateOnOpen) {
     history.value = data.history;
     metaCount.value = data.metaCount ?? 0;
     priorityCount.value = data.priorityCount ?? 0;
+    closed.value = data.closed ?? false;
     saveLocally();
     // Relay to the other peers so guests connected to the same host stay in sync.
     broadcastState(conn.peer);
@@ -172,7 +177,8 @@ function statePayload() {
     list: toRaw(list.value),
     history: toRaw(history.value),
     metaCount: metaCount.value,
-    priorityCount: priorityCount.value
+    priorityCount: priorityCount.value,
+    closed: closed.value
   };
 }
 
@@ -191,6 +197,7 @@ function saveLocally() {
   localStorage.setItem('history', JSON.stringify(history.value));
   localStorage.setItem('metaCount', String(metaCount.value));
   localStorage.setItem('priorityCount', String(priorityCount.value));
+  localStorage.setItem('closed', String(closed.value));
 }
 
 function commit() {
@@ -273,6 +280,11 @@ function removeFromList(index) {
   commit();
 }
 
+function setClosed(value) {
+  closed.value = value;
+  commit();
+}
+
 function removeFromHistory(name) {
   history.value = history.value.filter(e => e !== name);
   commit();
@@ -286,10 +298,12 @@ export function useSpeakers() {
     history,
     peerId,
     connections,
+    closed,
     addSpeaker,
     removeSpeaker,
     removeFromList,
     removeFromHistory,
+    setClosed,
     rowLabel,
   };
 }

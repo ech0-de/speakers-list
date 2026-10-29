@@ -23,6 +23,8 @@
     </div>
     <div v-else class="text-h4 text-medium-emphasis">—</div>
 
+    <div v-if="closed" class="closed" title="Speaker's list is closed">🔒</div>
+
     <div class="peers text-caption text-medium-emphasis">
       Connected Peers: {{ connections.length }}
     </div>
@@ -35,7 +37,7 @@
   import { createAvatar } from '@dicebear/core';
   import { useSpeakers } from '@/composables/useSpeakers';
 
-  const { list, connections, rowLabel } = useSpeakers();
+  const { list, connections, closed, rowLabel } = useSpeakers();
 
   const current = computed(() => list.value[0]);
   const next = computed(() => list.value[1]);
@@ -55,6 +57,13 @@
     font-size: clamp(3rem, 10vw, 8rem);
     font-weight: 500;
     line-height: 1.1;
+  }
+
+  .closed {
+    font-size: 4rem;
+    position: absolute;
+    right: 24px;
+    top: 16px;
   }
 
   .peers {

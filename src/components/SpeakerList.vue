@@ -23,7 +23,7 @@
           </div>
 
           <v-card-title class="text-h4 text-center flex-grow-1">
-            🎤 Speaker's List &nbsp;📝
+            🎤 Speaker's List &nbsp;📝<span v-if="closed" title="Speaker's list is closed">&nbsp;🔒</span>
           </v-card-title>
 
           <div class="d-flex flex-column align-start mr-4">
@@ -118,10 +118,12 @@
     history,
     peerId,
     connections,
+    closed,
     addSpeaker,
     removeSpeaker,
     removeFromList,
     removeFromHistory,
+    setClosed,
     rowLabel,
   } = useSpeakers();
 
@@ -148,6 +150,11 @@
 
     if (name === '/') {
       removeSpeaker();
+      return;
+    }
+
+    if (name === '/close' || name === '/open') {
+      setClosed(name === '/close');
       return;
     }
 
