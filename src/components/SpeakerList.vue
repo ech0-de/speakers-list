@@ -62,6 +62,7 @@
           clearable
           :items="speakers"
           label="Speaker Name"
+          :menu-props="{ maxHeight: 3 * 48 + 16 }"
           variant="solo-filled"
           @update:menu="scrollIntoView"
           @update:model-value="updateModelValue"
